@@ -50,6 +50,7 @@
         app:layout_constraintBaseline_toBaselineOf="@+id/play_btn"
         app:layout_constraintEnd_toStartOf="@+id/play_btn"
         app:layout_constraintStart_toStartOf="parent" />
+
     <Button
         android:id="@+id/forward_btn"
         android:layout_width="60dp"
@@ -99,4 +100,5 @@
         android:text="00:00"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/seekBar" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
