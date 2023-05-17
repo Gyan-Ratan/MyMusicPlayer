@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import java.util.concurrent.TimeUnit;
+
 public class MainActivity extends AppCompatActivity {
             //Widgets
         Button forward_btn,back_btn,play_btn,pause_btn;
@@ -72,8 +74,29 @@ public class MainActivity extends AppCompatActivity {
             oneTimeOnly =1;
         }
 
-
-
-
+        time_txt.setText(String.format("%d min %d sec",
+                TimeUnit.MILLISECONDS.toMinutes((long) finalTime),
+                TimeUnit.MILLISECONDS.toSeconds((long) finalTime)-
+                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes
+                                ((long) finalTime))
+                ));
+        seekBar.setProgress((int) startTime);
+        handler.postDelayed(UpdateSongTime, 100);
     }
+
+    private Runnable UpdateSongTime = new Runnable() {
+        @Override
+        public void run() {
+            startTime = mediaPlayer.getCurrentPosition();
+            time_txt.setText(String.format("%d min %d Sec",
+                    TimeUnit.MILLISECONDS.toMinutes((long) startTime),
+                    TimeUnit.MILLISECONDS.toSeconds((long) startTime)
+                    -TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes((long) startTime))
+                    ));
+
+            seekBar.setProgress((int) startTime);
+            handler.postDelayed(this,100);
+        }
+    };
+
 }
