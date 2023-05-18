@@ -9,11 +9,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
-            //Widgets
+    //Widgets
         Button forward_btn,back_btn,play_btn,pause_btn;
         TextView time_txt,title_txt;
         SeekBar seekBar;
@@ -27,8 +28,8 @@ public class MainActivity extends AppCompatActivity {
     //variables
         double startTime =0;
         double finalTime =0;
-        int forwardTime =0;
-        int backwardTime =0;
+        int forwardTime =10000;
+        int backwardTime =10000;
         static int oneTimeOnly =0;
 
     @Override
@@ -40,13 +41,26 @@ public class MainActivity extends AppCompatActivity {
         pause_btn=findViewById(R.id.pause_btn);
         forward_btn=findViewById(R.id.forward_btn);
         back_btn=findViewById(R.id.back_btn);
-
         // TextView
         time_txt=findViewById(R.id.time_left_text);
         title_txt=findViewById(R.id.song_title);
         //seekbar
         seekBar =findViewById(R.id.seekBar);
+        //Media Player
+        mediaPlayer =MediaPlayer.create(
+                this,
+                R.raw.sdp
+        );
 
+        // Putting the Song title
+        title_txt.setText(getResources().getIdentifier(
+                "sdp",
+                "raw",
+                getPackageName()
+        ));
+        seekBar.setClickable(false);
+
+        // Functionaltities  for the buttons
         play_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -54,14 +68,40 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        pause_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mediaPlayer.stop();
+            }
+        });
 
+        forward_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int temp = (int) startTime;
+                if((temp + forwardTime)<= finalTime){
+                    startTime =startTime + forwardTime;
+                    mediaPlayer.seekTo((int) startTime);
+                }
+                else {
+                    Toast.makeText(MainActivity.this,"Cannot Go forward",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
-
-
-
-
-
-
+        back_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int temp = (int) startTime;
+                if((temp + backwardTime)<= finalTime){
+                    startTime =startTime - backwardTime;
+                    mediaPlayer.seekTo((int) startTime);
+                }
+                else {
+                    Toast.makeText(MainActivity.this,"Cannot Go BACK",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void PlayMusic() {
@@ -73,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
             seekBar.setMax((int) finalTime);
             oneTimeOnly =1;
         }
+
 
         time_txt.setText(String.format("%d min %d sec",
                 TimeUnit.MILLISECONDS.toMinutes((long) finalTime),
